@@ -17,7 +17,7 @@ def create_peer_list(dictionary_list, hostname, port):
     keys = ['Hostname', 'Port Number']
 
     entry = [hostname, str(port)]
-    dictionary_list.append(dict(zip(keys, entry)))
+    dictionary_list.insert(0, dict(zip(keys, entry)))
     return peer_list, keys
 
 
