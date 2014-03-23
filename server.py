@@ -31,7 +31,7 @@ def create_rfc_list(dictionary_list, dict_list_of_rfcs, hostname):
     for rfc in dict_list_of_rfcs:
         rfc_number = rfc['RFC Number']
         rfc_title = rfc['RFC Title']
-        entry = [rfc_number, rfc_title, hostname]
+        entry = [str(rfc_number), rfc_title, hostname]
         dictionary_list.insert(0, dict(zip(keys, entry)))
 
     return RFC_list, keys
@@ -46,7 +46,10 @@ def print_dictionary(dictionary_list, keys):
 while True:
     c, addr = s.accept()     # Establish connection with client.
     print('Got connection from', addr)
-    peer_list, keys = create_peer_list(peer_list, addr[0], addr[1])
-    print_dictionary(peer_list, keys)
+    peer_list, peer_keys = create_peer_list(peer_list, addr[0], addr[1])
+    print_dictionary(peer_list, peer_keys)
+
+    RFC_list, rfc_keys = create_rfc_list(RFC_list, example_dict_list_of_rfcs, addr[0])
+    print_dictionary(RFC_list, rfc_keys)
     c.send(bytes('Thank you for connecting', "utf-8"))
     c.close()                # Close the connection
