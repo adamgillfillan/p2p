@@ -33,7 +33,7 @@
       <file leaf-file-name="server.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="51" selection-start="536" selection-end="536" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="323">
+            <state line="13" column="51" selection-start="536" selection-end="536" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
               <folding />
             </state>
           </provider>
@@ -42,7 +42,7 @@
       <file leaf-file-name="client.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="19" selection-start="339" selection-end="339" vertical-scroll-proportion="0.28911564" vertical-offset="0" max-vertical-offset="588">
+            <state line="12" column="56" selection-start="423" selection-end="423" vertical-scroll-proportion="0.3469388" vertical-offset="0" max-vertical-offset="588">
               <folding />
             </state>
           </provider>
@@ -59,7 +59,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="testerbranch" />
+        <entry key="$PROJECT_DIR$" value="testBranch123" />
       </map>
     </option>
   </component>
@@ -382,12 +382,16 @@
       <created>1395597325758</created>
       <updated>1395597325758</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="test commit4">
+      <created>1395597491731</created>
+      <updated>1395597491731</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -445,7 +449,8 @@
     <MESSAGE value="test commit" />
     <MESSAGE value="test commit2" />
     <MESSAGE value="test commit3" />
-    <option name="LAST_COMMIT_MESSAGE" value="test commit3" />
+    <MESSAGE value="test commit4" />
+    <option name="LAST_COMMIT_MESSAGE" value="test commit4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -530,7 +535,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="19" selection-start="339" selection-end="339" vertical-scroll-proportion="0.28911564" vertical-offset="0" max-vertical-offset="588">
+        <state line="12" column="56" selection-start="423" selection-end="423" vertical-scroll-proportion="0.3469388" vertical-offset="0" max-vertical-offset="588">
           <folding />
         </state>
       </provider>
