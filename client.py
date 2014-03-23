@@ -13,4 +13,3 @@ print(s.recv(1024))
 s.close                     # Close the socket when done
 
 #testing branch commit2
-#asdf
