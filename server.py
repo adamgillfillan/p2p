@@ -43,6 +43,14 @@ def print_dictionary(dictionary_list, keys):
         print(' '.join([item[key] for key in keys]))
 
 
+#Deletes the dictionary associated with the hostname from a list of dictionaries.
+def delete_dictionary(dict_list_of_peers, dict_list_of_rfcs, hostname):
+    dict_list_of_peers[:] = [d for d in dict_list_of_peers if d.get('Hostname') != hostname]
+    dict_list_of_rfcs[:] = [d for d in dict_list_of_rfcs if d.get('Hostname') != hostname]
+
+    return dict_list_of_peers, dict_list_of_rfcs
+
+
 while True:
     c, addr = s.accept()     # Establish connection with client.
     print('Got connection from', addr)
@@ -53,3 +61,6 @@ while True:
     print_dictionary(RFC_list, rfc_keys)
     c.send(bytes('Thank you for connecting', "utf-8"))
     c.close()                # Close the connection
+    # peer_list, RFC_list = delete_dictionary(peer_list, RFC_list, addr[0])
+    # print_dictionary(peer_list, peer_keys)
+    # print_dictionary(RFC_list, rfc_keys)
