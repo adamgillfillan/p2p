@@ -12,4 +12,3 @@ while True:
     print('Got connection from', addr)
     c.send(bytes('Thank you for connecting', "utf-8"))
     c.close()                # Close the connection
-    #testing branch commit

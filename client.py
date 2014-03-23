@@ -11,3 +11,5 @@ s.connect((host, port))
 print(s.recv(1024))
 #if key press, then close:
 s.close                     # Close the socket when done
+
+#testing branch commit2
