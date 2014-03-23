@@ -1,5 +1,6 @@
 __author__ = 'Adam'
 import socket
+from _thread import *
 
 s = socket.socket()         # Create a socket object
 host = socket.gethostname() # Get local machine name
@@ -14,11 +15,12 @@ RFC_list = []
 
 #Takes a list and appends a dictionary of hostname and port number
 def create_peer_list(dictionary_list, hostname, port):
+    #global peer_list
     keys = ['Hostname', 'Port Number']
 
     entry = [hostname, str(port)]
     dictionary_list.insert(0, dict(zip(keys, entry)))
-    return peer_list, keys
+    return dictionary_list, keys
 
 example_dict_list_of_rfcs = [{'RFC Number': 1234, 'RFC Title': "This is an RFC Title"},
                              {'RFC Number': 4321, 'RFC Title': "This is another RFC Title"}]
@@ -26,6 +28,7 @@ example_dict_list_of_rfcs = [{'RFC Number': 1234, 'RFC Title': "This is an RFC T
 
 #Creates RFC_list
 def create_rfc_list(dictionary_list, dict_list_of_rfcs, hostname):
+    #global RFC_list
     keys = ['RFC Number', 'RFC Title', 'Hostname']
 
     for rfc in dict_list_of_rfcs:
@@ -34,7 +37,7 @@ def create_rfc_list(dictionary_list, dict_list_of_rfcs, hostname):
         entry = [str(rfc_number), rfc_title, hostname]
         dictionary_list.insert(0, dict(zip(keys, entry)))
 
-    return RFC_list, keys
+    return dictionary_list, keys
 
 
 #Prints the list of dictionary items
@@ -45,22 +48,37 @@ def print_dictionary(dictionary_list, keys):
 
 #Deletes the dictionary associated with the hostname from a list of dictionaries.
 def delete_dictionary(dict_list_of_peers, dict_list_of_rfcs, hostname):
+    #print("poopy")
     dict_list_of_peers[:] = [d for d in dict_list_of_peers if d.get('Hostname') != hostname]
     dict_list_of_rfcs[:] = [d for d in dict_list_of_rfcs if d.get('Hostname') != hostname]
 
     return dict_list_of_peers, dict_list_of_rfcs
 
 
-while True:
-    c, addr = s.accept()     # Establish connection with client.
+def client_thread(conn, addr):
+
+    global peer_list, RFC_list
+
+    conn.send(bytes('Thank you for connecting', 'utf-8'))
+
     print('Got connection from', addr)
+    #print("HELLO")
     peer_list, peer_keys = create_peer_list(peer_list, addr[0], addr[1])
     print_dictionary(peer_list, peer_keys)
-
     RFC_list, rfc_keys = create_rfc_list(RFC_list, example_dict_list_of_rfcs, addr[0])
     print_dictionary(RFC_list, rfc_keys)
-    c.send(bytes('Thank you for connecting', "utf-8"))
-    c.close()                # Close the connection
-    # peer_list, RFC_list = delete_dictionary(peer_list, RFC_list, addr[0])
-    # print_dictionary(peer_list, peer_keys)
-    # print_dictionary(RFC_list, rfc_keys)
+    while True:
+        #Receiving from client
+        data = conn.recv(1024)
+        data = data.decode("utf-8")
+        if data == "1":
+            break
+    peer_list, RFC_list = delete_dictionary(peer_list, RFC_list, addr[0])
+    print_dictionary(peer_list, peer_keys)
+    print_dictionary(RFC_list, rfc_keys)
+    conn.close()
+
+while True:
+    c, addr = s.accept()     # Establish connection with client.
+    start_new_thread(client_thread, (c, addr))
+#s.close()
