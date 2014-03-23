@@ -11,6 +11,7 @@ s.listen(5)                 # Now wait for client connection.
 dict_list = []
 
 
+#Takes a list and appends a dictionary of hostname and port number
 def create_peer_list(dictionary_list, hostname, port):
     keys = ['Hostname', 'Port Number']
 
@@ -19,6 +20,7 @@ def create_peer_list(dictionary_list, hostname, port):
     return dict_list, keys
 
 
+#Prints the list of dictionary items
 def print_dictionary(dictionary_list, keys):
     for item in dictionary_list:
         print(' '.join([item[key] for key in keys]))
