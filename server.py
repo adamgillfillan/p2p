@@ -1,6 +1,12 @@
-__author__ = 'Adam'
-import socket
+#!/usr/bin/python           # This is server.py file
+
+import socket               # Import socket module
+import string 
+import time					# Import time module
+import platform				# Import platform module to get our OS
+import os
 from _thread import *
+import pickle
 
 s = socket.socket()          # Create a socket object
 host = socket.gethostname()  # Get local machine name
@@ -11,6 +17,64 @@ s.listen(5)                  # Now wait for client connection.
 
 peer_list = []  # Global list of dictionaries for peers
 RFC_list = []   # Global list of dictionaries for RFCs
+
+# s = socket.socket()         # Create a socket object
+# host = socket.gethostname() # Get local machine name
+# port = 38888            # Reserve a port for your service.
+# s.bind((host, port))        # Bind to the port
+# 
+# s.listen(5)                 # Now wait for client connection.
+
+
+# def response_message(status):
+# 	if(status == "200"):
+# 		phrase = "OK"
+# 	elif(status == "404"):
+# 		phrase = "Not Found"
+# 	elif(status == "400"):
+# 		phrase = "Bad Request"
+# 	elif(status == "502"):
+# 		phrase = "P2P-CI Version Not Supported"	
+# 	last_modified = time.ctime(os.path.getmtime(file))
+# 	current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
+# 	message="P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+# 			"Date: "+ current_time + "\n"\
+# 			"OS: "+str(OS)+"\n"
+
+
+# P2S response message from the server
+def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
+    filename = "rfc"+str(rfc_num)+".txt"
+    current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
+    OS = platform.platform()
+    if(os.path.exists(filename)==0):
+        status = "404"
+        phrase = "Not Found"
+        message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+                 "Date: "+ current_time + "\n"\
+                 "OS: "+str(OS)+"\n"
+    else:
+        status = "200"
+        phrase = "OK"
+        txt = open(filename)
+        data = txt.read()
+        last_modified = time.ctime(os.path.getmtime(filename))
+        content_length = os.path.getsize(filename)
+        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+        		  + str(data)
+        ##################
+        #######need to discuss with adam about interface
+        ###################
+        #print message
+    return message
+
+def send_file(filename):  # send the RFC to peers
+    txt = open(filename)
+    data = txt.read(1024)
+    while(data):
+        s.send(data)
+        data =txt.read(1024)
+    s.close()
 
 # Example list of dictionaries of RFC numbers and Titles.
 example_dict_list_of_rfcs = [{'RFC Number': 1234, 'RFC Title': "This is an RFC Title"},
@@ -61,13 +125,13 @@ def delete_rfcs_dictionary(dict_list_of_rfcs, hostname):
 # Create a thread for each client. This prevents the server from blocking communication with multiple clients
 def client_thread(conn, addr):
     global peer_list, RFC_list
-
     conn.send(bytes('Thank you for connecting', 'utf-8'))
     print('Got connection from', addr)
-
+    data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
+    print (data)
     # Generate the peer list and RFC list
-    peer_list, peer_keys = create_peer_list(peer_list, addr[0], addr[1])
-    RFC_list, rfc_keys = create_rfc_list(RFC_list, example_dict_list_of_rfcs, addr[0])
+    peer_list, peer_keys = create_peer_list(peer_list, addr[0], data[0]) # change addr[1] to data[0]
+    RFC_list, rfc_keys = create_rfc_list(RFC_list, data[1], addr[0])
     print_dictionary(peer_list, peer_keys)
     print_dictionary(RFC_list, rfc_keys)
 
@@ -85,8 +149,19 @@ def client_thread(conn, addr):
     print_dictionary(RFC_list, rfc_keys)
 
     conn.close()
-
 while True:
     c, addr = s.accept()     # Establish connection with client.
     start_new_thread(client_thread, (c, addr))
 s.close()
+
+# while True:
+#    c, addr = s.accept()     # Establish connection with client.
+#    txt= c.recv(1024)
+#    print txt
+#    indexP = txt.index('P')
+#    indexC = txt.index('C')
+#    rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
+#    print rfc_num
+#    print 'Got connection from', addr
+#    c.send(p2p_response_message(rfc_num))
+#    c.close()                # Close the connection
