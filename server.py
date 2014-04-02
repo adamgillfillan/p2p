@@ -69,6 +69,10 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
     return message
 
 
+def p2s_add_response(conn, data):
+    conn.send(bytes(data, 'utf-8'))
+
+
 def send_file(filename):  # send the RFC to peers
     txt = open(filename)
     data = txt.read(1024)
@@ -132,8 +136,7 @@ def delete_rfcs_dictionary(dict_list_of_rfcs, hostname):
     return dict_list_of_rfcs
 
 
-def test_message(conn, data):
-    conn.send(bytes(data, 'utf-8'))
+
 
 
 # Create a thread for each client. This prevents the server from blocking communication with multiple clients
@@ -156,7 +159,7 @@ def client_thread(conn, addr):
         #if data == "2":
         else:
             #print(data[0])
-            test_message(conn, data[0])  # Put server response message here
+            p2s_add_response(conn, data[0])  # Put server response message here
             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
             print_dictionary(RFC_list, rfc_keys)
 
