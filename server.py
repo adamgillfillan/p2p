@@ -47,7 +47,7 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
     filename = "rfc"+str(rfc_num)+".txt"
     current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
     OS = platform.platform()
-    if(os.path.exists(filename)==0):
+    if os.path.exists(filename) == 0:
         status = "404"
         phrase = "Not Found"
         message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
@@ -61,19 +61,20 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
         last_modified = time.ctime(os.path.getmtime(filename))
         content_length = os.path.getsize(filename)
         message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
-        		  + str(data)
+                               + str(data)
         ##################
         #######need to discuss with adam about interface
         ###################
         #print message
     return message
 
+
 def send_file(filename):  # send the RFC to peers
     txt = open(filename)
     data = txt.read(1024)
-    while(data):
+    while data:
         s.send(data)
-        data =txt.read(1024)
+        data = txt.read(1024)
     s.close()
 
 # Example list of dictionaries of RFC numbers and Titles.
