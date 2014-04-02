@@ -21,8 +21,6 @@ import pickle
 # 			"Date: "+ current_time + "\n"\
 # 			"OS: "+str(OS)+"\n"
 
-upload_port_num = 7777
-dict_list_of_rfcs = []  #list of dictionaries of RFC numbers and Titles.
 
 
 # display p2p response message
@@ -74,15 +72,24 @@ def p2p_request_message(rfc_num, host):
     return message
 
 
-# display p2s request message for ADD and LOOKUP methods
-def p2s_request_message(rfc_num, host, port, method, title):# for ADD, LOOKUP method
-    message = method + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
+# display p2s request message for ADD method
+def p2s_add_message(rfc_num, host, port, title):# for ADD
+    message = "ADD" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
     #print message
-    #return message
+    return [message, rfc_num, host, port, title]
 
+
+# display p2s request message for LOOKUP method
+def p2s_lookup_message(rfc_num, host, port, title): #LOOKUP method
+    message = "LOOKUP" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
+              "Host: " + str(host)+"\n"\
+              "Port: " + str(port)+"\n"\
+              "Title: " + str(title)+"\n"
+    #print message
+    return message
 
 #display p2s request message for LIST methods
 def p2s_list_request(host, port):
@@ -96,12 +103,12 @@ def p2s_list_request(host, port):
 #get the list of the local rfcs
 def get_local_rfcs():
     rfcs_path = os.getcwd() + "/rfc"
-    rfcs_num =[num[num.find("c")+1:num.find(".")] for num in os.listdir(rfcs_path) if 'rfc' in num]
+    rfcs_num = [num[num.find("c")+1:num.find(".")] for num in os.listdir(rfcs_path) if 'rfc' in num]
     return rfcs_num
 
 
 #pass peer's hostname, port number and rfc_num, rfc_title
-def peer_infomation():
+def peer_information():
     keys = ["RFC Number", "RFC Title"]
     rfcs_num = get_local_rfcs()
     rfcs_title = ["title1", "title2", "title3"]
@@ -111,32 +118,45 @@ def peer_infomation():
     return [upload_port_num, dict_list_of_rfcs]  #[port, rfcs_num, rfcs_title]
 
 
+
+upload_port_num = 7777
+dict_list_of_rfcs = []  #list of dictionaries of RFC numbers and Titles.
+
 s=socket.socket()          # Create a socket object
 host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
 
 s.connect((host, port))
-data = pickle.dumps(peer_infomation())
-print (data)
+data = pickle.dumps(peer_information())
+print(data)
 s.send(data)
 data = s.recv(1024)
 print(data.decode('utf-8'))
 
 
-#if key press, then close:
-user_input = input("> Enter 1 for exit: ")
-if user_input == "1":
-    s.send(bytes('1', "utf-8"))
-    s.close                     # Close the socket when done
-elif user_input == "2":
-    pass
-else:
+def get_user_input():
+    #if key press, then close:
+
+
     user_input = input("> Enter 1 for exit: ")
+    if user_input == "1":
+        s.send(bytes('1', "utf-8"))
+        s.close                     # Close the socket when done
+    elif user_input == "2":
+        user_input_rfc_number = input("> Enter the RFC Number: ")
+        user_input_rfc_title = input("> Enter the RFC Title: ")
 
+        data = pickle.dumps(p2s_add_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        s.send(data)
+        server_data = s.recv(1024)
+        print(server_data.decode('utf-8'))
+        get_user_input()
+    else:
+        get_user_input()
 
+get_user_input()
 
-
-# peers_infomation()
+# peers_information()
 
 # p2s_list_request("wfu.eedu", "787")
 # #p2s_request_message("234", "34", "wfu.ncsu.edu", "ADD", "This is a test")

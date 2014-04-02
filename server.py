@@ -77,9 +77,9 @@ def send_file(filename):  # send the RFC to peers
         data = txt.read(1024)
     s.close()
 
-# Example list of dictionaries of RFC numbers and Titles.
-example_dict_list_of_rfcs = [{'RFC Number': 1234, 'RFC Title': "This is an RFC Title"},
-                             {'RFC Number': 4321, 'RFC Title': "This is another RFC Title"}]
+# # Example list of dictionaries of RFC numbers and Titles.
+# example_dict_list_of_rfcs = [{'RFC Number': 1234, 'RFC Title': "This is an RFC Title"},
+#                              {'RFC Number': 4321, 'RFC Title': "This is another RFC Title"}]
 
 
 #Takes a list and appends a dictionary of hostname and port number
@@ -105,6 +105,15 @@ def create_rfc_list(dictionary_list, dict_list_of_rfcs, hostname):
     return dictionary_list, keys
 
 
+# Inserts new Dictionary item to RFC_list when client makes an ADD request
+def append_to_rfc_list(dictionary_list, rfc_num, rfc_title, hostname):
+    keys = ['RFC Number', 'RFC Title', 'Hostname']
+    entry = [str(rfc_num), rfc_title, hostname]
+
+    dictionary_list.insert(0, dict(zip(keys, entry)))
+    return dictionary_list
+
+
 # Prints the list of dictionary items
 def print_dictionary(dictionary_list, keys):
     for item in dictionary_list:
@@ -123,25 +132,33 @@ def delete_rfcs_dictionary(dict_list_of_rfcs, hostname):
     return dict_list_of_rfcs
 
 
+def test_message(conn, data):
+    conn.send(bytes(data, 'utf-8'))
+
+
 # Create a thread for each client. This prevents the server from blocking communication with multiple clients
 def client_thread(conn, addr):
     global peer_list, RFC_list
     conn.send(bytes('Thank you for connecting', 'utf-8'))
     print('Got connection from', addr)
     data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
-    print (data)
+    print(data)
     # Generate the peer list and RFC list
-    peer_list, peer_keys = create_peer_list(peer_list, addr[0], data[0]) # change addr[1] to data[0]
+    peer_list, peer_keys = create_peer_list(peer_list, addr[0], data[0])  # change addr[1] to data[0]
     RFC_list, rfc_keys = create_rfc_list(RFC_list, data[1], addr[0])
     print_dictionary(peer_list, peer_keys)
     print_dictionary(RFC_list, rfc_keys)
 
     while True:
-        #Receiving from client
-        data = conn.recv(1024)
-        data = data.decode("utf-8")
+        data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
         if data == "1":
             break
+        #if data == "2":
+        else:
+            #print(data[0])
+            test_message(conn, data[0])  # Put server response message here
+            RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
+            print_dictionary(RFC_list, rfc_keys)
 
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])
