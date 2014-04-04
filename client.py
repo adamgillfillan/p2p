@@ -22,7 +22,6 @@ import pickle
 # 			"OS: "+str(OS)+"\n"
 
 
-
 # display p2p response message
 def p2p_response_message(rfc_num): # the parameter "rfc_num" should be str
     filename = "rfc"+str(rfc_num)+".txt"
@@ -73,7 +72,7 @@ def p2p_request_message(rfc_num, host):
 
 
 # display p2s request message for ADD method
-def p2s_add_message(rfc_num, host, port, title):# for ADD
+def p2s_add_message(rfc_num, host, port, title):  # for ADD
     message = "ADD" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
@@ -83,13 +82,14 @@ def p2s_add_message(rfc_num, host, port, title):# for ADD
 
 
 # display p2s request message for LOOKUP method
-def p2s_lookup_message(rfc_num, host, port, title): #LOOKUP method
+def p2s_lookup_message(rfc_num, host, port, title):  # LOOKUP method
     message = "LOOKUP" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
     #print message
     return message
+
 
 #display p2s request message for LIST methods
 def p2s_list_request(host, port):
@@ -111,31 +111,31 @@ def get_local_rfcs():
 def peer_information():
     keys = ["RFC Number", "RFC Title"]
     rfcs_num = get_local_rfcs()
-    rfcs_title = get_local_rfcs() #["title1", "title2", "title3"] we use rfcs_num to fill in title
+    rfcs_title = get_local_rfcs()  # ["title1", "title2", "title3"] we use rfcs_num to fill in title
     for num, title in zip(rfcs_num, rfcs_title):
         entry = [num, title]
         dict_list_of_rfcs.insert(0, dict(zip(keys, entry)))
-    return [upload_port_num, dict_list_of_rfcs]  #[port, rfcs_num, rfcs_title]
+    return [upload_port_num, dict_list_of_rfcs]  # [port, rfcs_num, rfcs_title]
 
 
 
 upload_port_num = 7777
-dict_list_of_rfcs = []  #list of dictionaries of RFC numbers and Titles.
+dict_list_of_rfcs = []  # list of dictionaries of RFC numbers and Titles.
 
 s=socket.socket()          # Create a socket object
 host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
 s.connect((host, port))
-data = pickle.dumps(peer_information())# send all the peer information to server 
+data = pickle.dumps(peer_information())  # send all the peer information to server
 #print(data)
 s.send(data)
 data = s.recv(1024)
 print(data.decode('utf-8'))
 s.close
 
+
 def get_user_input():
     #if key press, then close:
-
 
     user_input = input("> Enter 1 for exit: ")
     if user_input == "1":
@@ -164,9 +164,7 @@ upload_socket.listen(5)
 
 
 
-while True:
-
-
+#while True:
 # peers_information()
 
 # p2s_list_request("wfu.eedu", "787")
