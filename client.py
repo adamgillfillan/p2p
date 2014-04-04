@@ -136,12 +136,19 @@ print(data.decode('utf-8'))
 s.close
 
 
+def print_combined_list(data):
+    for item in data:
+        print(' '.join(item))
+
+
 def get_user_input():
     #if key press, then close:
 
     user_input = input("> Enter 1 for exit: ")
     if user_input == "1":
-        s.send(bytes('1', "utf-8"))
+        data = pickle.dumps("1")
+        #s.send(bytes('1', "utf-8"))
+        s.send(data)
         s.close                     # Close the socket when done
     elif user_input == "2":
         user_input_rfc_number = input("> Enter the RFC Number: ")
@@ -155,10 +162,13 @@ def get_user_input():
     elif user_input == "3":
         data = pickle.dumps(p2s_list_request(host, port))
         s.send(data)
-        server_data = s.recv(2048)
-        print(server_data.decode('utf-8'))
+        server_data = s.recv(1024)
+        print(server_data.decode('utf-8'), end="")
+        #my_data = server_data.decode('utf-8')
         new_data = pickle.loads(s.recv(1024))
-        print(new_data)
+        #print(my_data, print_combined_list(new_data))
+        #print(new_data)
+        print_combined_list(new_data)
         get_user_input()
     else:
         get_user_input()
@@ -183,31 +193,29 @@ input=[upload_socket,sys.stdin]
 # 	print ('Got connection from', addr)
 # 	c.send(p2p_response_message(rfc_num))
 # 	c.close()                # Close the connection
-	
+
+
 while True:
-	c, addr = upload_socket.accept() 
-	input.append(c)
-	print("hello")
-	while True:
-		readyInput,readyOutput,readyException=select.select(input,[],[])
-		for indata in readyInput:
-			if indata == c:
-				data = c.recv(1024)
-				indexP = txt.index('P')
-				indexC = txt.index('C')
-				rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
-				print (rfc_num)
-				print ('Got connection from', addr)
-				c.send(p2p_response_message(rfc_num))	
-				if not data:
-					break
-			else:
-				print ("jj")
-				get_user_input()
-	c.close()
-				
-	
-	
+    c, addr = upload_socket.accept()
+    input.append(c)
+    print("hello")
+    while True:
+        readyInput,readyOutput,readyException=select.select(input,[],[])
+        for indata in readyInput:
+            if indata == c:
+                data = c.recv(1024)
+                indexP = data.index('P')
+                indexC = data.index('C')
+                rfc_num = data[indexC+1:indexP-1]# get the rfc_number
+                print(rfc_num)
+                print('Got connection from', addr)
+                c.send(p2p_response_message(rfc_num))
+                if not data:
+                    break
+            else:
+                print("jj")
+                get_user_input()
+    c.close()
 
 # peers_information()
 
