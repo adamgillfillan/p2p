@@ -111,7 +111,7 @@ def get_local_rfcs():
 def peer_information():
     keys = ["RFC Number", "RFC Title"]
     rfcs_num = get_local_rfcs()
-    rfcs_title = ["title1", "title2", "title3"]
+    rfcs_title = get_local_rfcs() #["title1", "title2", "title3"] we use rfcs_num to fill in title
     for num, title in zip(rfcs_num, rfcs_title):
         entry = [num, title]
         dict_list_of_rfcs.insert(0, dict(zip(keys, entry)))
@@ -125,14 +125,13 @@ dict_list_of_rfcs = []  #list of dictionaries of RFC numbers and Titles.
 s=socket.socket()          # Create a socket object
 host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
-
 s.connect((host, port))
-data = pickle.dumps(peer_information())
-print(data)
+data = pickle.dumps(peer_information())# send all the peer information to server 
+#print(data)
 s.send(data)
 data = s.recv(1024)
 print(data.decode('utf-8'))
-
+s.close
 
 def get_user_input():
     #if key press, then close:
@@ -146,7 +145,7 @@ def get_user_input():
         user_input_rfc_number = input("> Enter the RFC Number: ")
         user_input_rfc_title = input("> Enter the RFC Title: ")
 
-        data = pickle.dumps(p2s_add_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        data = pickle.dumps(p2s_add_message(user_input_rfc_number, host, upload_port_num, user_input_rfc_title))
         s.send(data)
         server_data = s.recv(1024)
         print(server_data.decode('utf-8'))
@@ -155,6 +154,18 @@ def get_user_input():
         get_user_input()
 
 get_user_input()
+
+# this is the upload socket for requesting from peers
+upload_socket= socket.socket() 
+host = socket.gethostname()
+port = upload_port_num
+upload_socket.bind((host, port))
+upload_socket.listen(5)
+
+
+
+while True:
+
 
 # peers_information()
 
