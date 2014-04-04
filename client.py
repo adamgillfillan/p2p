@@ -156,15 +156,13 @@ def get_user_input():
 get_user_input()
 
 # this is the upload socket for requesting from peers
-upload_socket= socket.socket() 
-host = socket.gethostname()
-port = upload_port_num
-upload_socket.bind((host, port))
-upload_socket.listen(5)
-
-
-
-while True:
+# upload_socket= socket.socket() 
+# host = socket.gethostname()
+# port = upload_port_num
+# upload_socket.bind((host, port))
+# upload_socket.listen(5)
+# 
+# while True:
 
 
 # peers_information()

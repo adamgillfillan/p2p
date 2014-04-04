@@ -69,8 +69,9 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
     return message
 
 
-def p2s_add_response(conn, data):
-    conn.send(bytes(data, 'utf-8'))
+def p2s_add_response(conn, rfc_num, rfc_title, hostname, port):
+    response = "P2P-CI/1.0 200 OK \nRFC "+ rfc_num +" "+rfc_title+" "+str(hostname)+" "+str(port)
+    conn.send(bytes(response, 'utf-8'))
 
 
 def send_file(filename):  # send the RFC to peers
@@ -159,8 +160,8 @@ def client_thread(conn, addr):
         #if data == "2":
         else:
             #print(data[0])
-            p2s_add_response(conn, data[0])  # Put server response message here
-            RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
+            p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
+            RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])# data1:rfc_num, data2:host, data3:upload_port, data4:title
             print_dictionary(RFC_list, rfc_keys)
 
     # Remove the client's info from the dictionaries
