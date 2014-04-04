@@ -8,7 +8,8 @@ import os
 from _thread import *
 import pickle
 
-s = socket.socket()          # Create a socket object
+s = socket.socket()# Create a socket object
+#s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEDADDR, 1)
 host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
 s.bind((host, port))         # Bind to the port
@@ -26,20 +27,22 @@ RFC_list = []   # Global list of dictionaries for RFCs
 # s.listen(5)                 # Now wait for client connection.
 
 
-# def response_message(status):
-# 	if(status == "200"):
-# 		phrase = "OK"
-# 	elif(status == "404"):
-# 		phrase = "Not Found"
-# 	elif(status == "400"):
-# 		phrase = "Bad Request"
-# 	elif(status == "502"):
-# 		phrase = "P2P-CI Version Not Supported"	
-# 	last_modified = time.ctime(os.path.getmtime(file))
-# 	current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
-# 	message="P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
-# 			"Date: "+ current_time + "\n"\
-# 			"OS: "+str(OS)+"\n"
+def response_message(status):
+    if(status == "200"):
+        phrase = "OK"
+    elif(status == "404"):
+        phrase = "Not Found"
+    elif(status == "400"):
+        phrase = "Bad Request"
+    # elif(status == "502"):
+    # phrase = "P2P-CI Version Not Supported"
+    # last_modified = time.ctime(os.path.getmtime(file))
+    # current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
+    message = "P2P-CI/1.0 " + status + " " + phrase + "\n"\
+    # 		"Date: "+ current_time + "\n"\
+    # 		"OS: "+str(OS)+"\n"
+
+    return message
 
 
 # P2S response message from the server
@@ -72,6 +75,19 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
 def p2s_add_response(conn, rfc_num, rfc_title, hostname, port):
     response = "P2P-CI/1.0 200 OK \nRFC "+ rfc_num +" "+rfc_title+" "+str(hostname)+" "+str(port)
     conn.send(bytes(response, 'utf-8'))
+
+
+def create_parsed_list_for_list_request():
+    parsed_list = []
+    return parsed_list
+
+
+def p2s_list_response(conn):
+    message = response_message(200)
+    new_list = create_parsed_list_for_list_request()
+
+    data = [message, new_list]
+    conn.send(bytes(data, 'utf-8'))
 
 
 def send_file(filename):  # send the RFC to peers
@@ -137,9 +153,6 @@ def delete_rfcs_dictionary(dict_list_of_rfcs, hostname):
     return dict_list_of_rfcs
 
 
-
-
-
 # Create a thread for each client. This prevents the server from blocking communication with multiple clients
 def client_thread(conn, addr):
     global peer_list, RFC_list
@@ -162,7 +175,13 @@ def client_thread(conn, addr):
             #print(data[0])
             p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])# data1:rfc_num, data2:host, data3:upload_port, data4:title
-            print_dictionary(RFC_list, rfc_keys)
+#         elif data[0][0] == "A":
+#             p2s_add_response(conn, data[0])  # Put server response message here
+#             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
+#             print_dictionary(RFC_list, rfc_keys)
+#         elif data[0][0] == "L":
+#             p2s_list_response(conn, data[0])
+#             #pass
 
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])

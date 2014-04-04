@@ -5,7 +5,9 @@ import time					# Import time module
 import platform				# Import platform module to get our OS
 import os
 import pickle
-
+import select
+import sys
+from _thread import *
 # def response_message(status):
 # 	if(status == "200"):
 # 		phrase = "OK"
@@ -20,7 +22,6 @@ import pickle
 # 	message="P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
 # 			"Date: "+ current_time + "\n"\
 # 			"OS: "+str(OS)+"\n"
-
 
 
 # display p2p response message
@@ -73,7 +74,7 @@ def p2p_request_message(rfc_num, host):
 
 
 # display p2s request message for ADD method
-def p2s_add_message(rfc_num, host, port, title):# for ADD
+def p2s_add_message(rfc_num, host, port, title):  # for ADD
     message = "ADD" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
@@ -83,13 +84,14 @@ def p2s_add_message(rfc_num, host, port, title):# for ADD
 
 
 # display p2s request message for LOOKUP method
-def p2s_lookup_message(rfc_num, host, port, title): #LOOKUP method
+def p2s_lookup_message(rfc_num, host, port, title):  # LOOKUP method
     message = "LOOKUP" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
     #print message
     return message
+
 
 #display p2s request message for LIST methods
 def p2s_list_request(host, port):
@@ -111,31 +113,31 @@ def get_local_rfcs():
 def peer_information():
     keys = ["RFC Number", "RFC Title"]
     rfcs_num = get_local_rfcs()
-    rfcs_title = get_local_rfcs() #["title1", "title2", "title3"] we use rfcs_num to fill in title
+    rfcs_title = get_local_rfcs()  # ["title1", "title2", "title3"] we use rfcs_num to fill in title
     for num, title in zip(rfcs_num, rfcs_title):
         entry = [num, title]
         dict_list_of_rfcs.insert(0, dict(zip(keys, entry)))
-    return [upload_port_num, dict_list_of_rfcs]  #[port, rfcs_num, rfcs_title]
+    return [upload_port_num, dict_list_of_rfcs]  # [port, rfcs_num, rfcs_title]
 
 
 
 upload_port_num = 7777
-dict_list_of_rfcs = []  #list of dictionaries of RFC numbers and Titles.
-
+dict_list_of_rfcs = []  # list of dictionaries of RFC numbers and Titles.
 s=socket.socket()          # Create a socket object
+#s.setsockopt(socket.SOL_SOCKET, socket.SO_RESUEDADDR, 1)
 host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
 s.connect((host, port))
-data = pickle.dumps(peer_information())# send all the peer information to server 
+data = pickle.dumps(peer_information())  # send all the peer information to server
 #print(data)
 s.send(data)
 data = s.recv(1024)
 print(data.decode('utf-8'))
 s.close
 
+
 def get_user_input():
     #if key press, then close:
-
 
     user_input = input("> Enter 1 for exit: ")
     if user_input == "1":
@@ -153,17 +155,51 @@ def get_user_input():
     else:
         get_user_input()
 
-get_user_input()
+
 
 # this is the upload socket for requesting from peers
-# upload_socket= socket.socket() 
-# host = socket.gethostname()
-# port = upload_port_num
-# upload_socket.bind((host, port))
-# upload_socket.listen(5)
-# 
-# while True:
 
+upload_socket= socket.socket() 
+host = socket.gethostname()
+port = upload_port_num
+upload_socket.bind((host, port))
+upload_socket.listen(5)
+input=[upload_socket,sys.stdin] 
+
+# def peer_thread(conn, addr):
+# 	data = c.recv(1024)
+# 	indexP = txt.index('P')
+# 	indexC = txt.index('C')
+# 	rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
+# 	print (rfc_num)
+# 	print ('Got connection from', addr)
+# 	c.send(p2p_response_message(rfc_num))
+# 	c.close()                # Close the connection
+	
+while True:
+	c, addr = upload_socket.accept() 
+	input.append(c)
+	print("hello")
+	while True:
+		readyInput,readyOutput,readyException=select.select(input,[],[])
+		for indata in readyInput:
+			if indata == c:
+				data = c.recv(1024)
+				indexP = txt.index('P')
+				indexC = txt.index('C')
+				rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
+				print (rfc_num)
+				print ('Got connection from', addr)
+				c.send(p2p_response_message(rfc_num))	
+				if not data:
+					break
+			else:
+				print ("jj")
+				get_user_input()
+	c.close()
+				
+	
+	
 
 # peers_information()
 
