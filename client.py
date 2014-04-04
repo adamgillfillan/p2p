@@ -150,6 +150,14 @@ def get_user_input():
         server_data = s.recv(1024)
         print(server_data.decode('utf-8'))
         get_user_input()
+    elif user_input == "3":
+        data = pickle.dumps(p2s_list_request(host, port))
+        s.send(data)
+        server_data = s.recv(2048)
+        print(server_data.decode('utf-8'))
+        new_data = pickle.loads(s.recv(1024))
+        print(new_data)
+        get_user_input()
     else:
         get_user_input()
 
