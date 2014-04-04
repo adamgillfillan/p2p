@@ -192,21 +192,8 @@ def client_thread(conn, addr):
         if data == "1":
             break
         #if data == "2":
-<<<<<<< HEAD
-        else:
-            #print(data[0])
-            p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
-            RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])# data1:rfc_num, data2:host, data3:upload_port, data4:title
-#         elif data[0][0] == "A":
-#             p2s_add_response(conn, data[0])  # Put server response message here
-#             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
-#             print_dictionary(RFC_list, rfc_keys)
-#         elif data[0][0] == "L":
-#             p2s_list_response(conn, data[0])
-#             #pass
-=======
         elif data[0][0] == "A":
-            p2s_add_response(conn, data[0])  # Put server response message here
+            p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
             print_dictionary(RFC_list, rfc_keys)
         elif data[0][0] == "L":
@@ -214,7 +201,6 @@ def client_thread(conn, addr):
             new_data = pickle.dumps(print_dictionary(combined_list, combined_keys))
             conn.send(new_data)
             #pass
->>>>>>> b7a5f01e6f9b6e90dd7c5ba69866965a380178ce
 
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])
