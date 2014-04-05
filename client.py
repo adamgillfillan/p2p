@@ -5,6 +5,7 @@ import time					# Import time module
 import platform				# Import platform module to get our OS
 import os
 import pickle
+import random
 import select
 import sys
 from _thread import *
@@ -28,7 +29,16 @@ from _thread import *
 def p2p_response_message(rfc_num): # the parameter "rfc_num" should be str
     filename = "rfc"+str(rfc_num)+".txt"
     current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
-    OS = platform.platform()
+    OS = platform.system()
+    m = filename.split()
+    filename = "".join(m)
+    current_path = os.getcwd()
+    if OS == "Windows":  # determine rfc path for two different system
+        filename = "rfc\\" + filename
+    else:
+        filename = "rfc/" + filename
+    #print (current_path+"/"+filename)
+    #print (os.path.exists(current_path+"/"+filename))
     if os.path.exists(filename) == 0:
         status = "404"
         phrase = "Not Found"
@@ -121,7 +131,7 @@ def peer_information():
 
 
 
-upload_port_num = 7777
+upload_port_num = 65000+random.randint(1, 500)  # generate a upload port randomly in 65000~65500
 dict_list_of_rfcs = []  # list of dictionaries of RFC numbers and Titles.
 s=socket.socket()          # Create a socket object
 #s.setsockopt(socket.SOL_SOCKET, socket.SO_RESUEDADDR, 1)
@@ -163,51 +173,50 @@ def get_user_input():
     else:
         get_user_input()
 
+def p2p_listen_thread(str, i):
+    upload_socket = socket.socket()
+    host = socket.gethostname()
+    upload_socket.bind((host, upload_port_num))
+    upload_socket.listen(5)
+    while True:
+        c, addr = upload_socket.accept()
+        data_p2p_undecode = c.recv(1024)
+        data_p2p = data_p2p_undecode.decode('utf-8')
+        indexP = data_p2p.index('P')
+        indexC = data_p2p.index('C')
+        rfc_num = data_p2p[indexC+1:indexP-1]# get the rfc_number
+        print (rfc_num)
+        print ('Got connection from', addr)
+        c.send(bytes(p2p_response_message(rfc_num),'utf-8'))
+        c.close()
+
+# First we create new thread to handle upload listening event
+# and then process the user input event, it looks like to be parrallel
+# it works!
+start_new_thread(p2p_listen_thread, ("hello", 1))
+get_user_input()
+
 
 
 # this is the upload socket for requesting from peers
 
-upload_socket= socket.socket() 
-host = socket.gethostname()
-port = upload_port_num
-upload_socket.bind((host, port))
-upload_socket.listen(5)
-input=[upload_socket,sys.stdin] 
-
+# upload_socket= socket.socket()
+# host = socket.gethostname()
+# port = upload_port_num
+# upload_socket.bind((host, port))
+# upload_socket.listen(5)
+# input=[upload_socket,sys.stdin]
+# print ("hdhd")
 # def peer_thread(conn, addr):
 # 	data = c.recv(1024)
 # 	indexP = txt.index('P')
 # 	indexC = txt.index('C')
-# 	rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
+# 	rfc_num = txt[indexC+1:indexP-1]# get the rfc_number
 # 	print (rfc_num)
 # 	print ('Got connection from', addr)
 # 	c.send(p2p_response_message(rfc_num))
 # 	c.close()                # Close the connection
-	
-while True:
-	c, addr = upload_socket.accept() 
-	input.append(c)
-	print("hello")
-	while True:
-		readyInput,readyOutput,readyException=select.select(input,[],[])
-		for indata in readyInput:
-			if indata == c:
-				data = c.recv(1024)
-				indexP = txt.index('P')
-				indexC = txt.index('C')
-				rfc_num = txt[indexC+1:indexP-1]# get the rfc_number 
-				print (rfc_num)
-				print ('Got connection from', addr)
-				c.send(p2p_response_message(rfc_num))	
-				if not data:
-					break
-			else:
-				print ("jj")
-				get_user_input()
-	c.close()
-				
-	
-	
+
 
 # peers_information()
 
