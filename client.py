@@ -209,46 +209,46 @@ get_user_input()
 
 
 # this is the upload socket for requesting from peers
-
-upload_socket= socket.socket()
-host = socket.gethostname()
-port = upload_port_num
-upload_socket.bind((host, port))
-upload_socket.listen(5)
-input=[upload_socket,sys.stdin]
-print ("hdhd")
-def peer_thread(conn, addr):
-	data = c.recv(1024)
-	indexP = data.index('P')
-	indexC = data.index('C')
-	rfc_num = data[indexC+1:indexP-1]# get the rfc_number
-	print (rfc_num)
-	print ('Got connection from', addr)
-	c.send(p2p_response_message(rfc_num))
-	c.close()                # Close the connection
-
-
-while True:
-    c, addr = upload_socket.accept()
-    input.append(c)
-    print("hello")
-    while True:
-        readyInput,readyOutput,readyException=select.select(input,[],[])
-        for indata in readyInput:
-            if indata == c:
-                data = c.recv(1024)
-                indexP = data.index('P')
-                indexC = data.index('C')
-                rfc_num = data[indexC+1:indexP-1]# get the rfc_number
-                print(rfc_num)
-                print('Got connection from', addr)
-                c.send(p2p_response_message(rfc_num))
-                if not data:
-                    break
-            else:
-                print("jj")
-                get_user_input()
-    c.close()
+#
+# upload_socket= socket.socket()
+# host = socket.gethostname()
+# port = upload_port_num
+# upload_socket.bind((host, port))
+# upload_socket.listen(5)
+# input=[upload_socket,sys.stdin]
+# print ("hdhd")
+# def peer_thread(conn, addr):
+# 	data = c.recv(1024)
+# 	indexP = data.index('P')
+# 	indexC = data.index('C')
+# 	rfc_num = data[indexC+1:indexP-1]# get the rfc_number
+# 	print (rfc_num)
+# 	print ('Got connection from', addr)
+# 	c.send(p2p_response_message(rfc_num))
+# 	c.close()                # Close the connection
+#
+#
+# while True:
+#     c, addr = upload_socket.accept()
+#     input.append(c)
+#     print("hello")
+#     while True:
+#         readyInput,readyOutput,readyException=select.select(input,[],[])
+#         for indata in readyInput:
+#             if indata == c:
+#                 data = c.recv(1024)
+#                 indexP = data.index('P')
+#                 indexC = data.index('C')
+#                 rfc_num = data[indexC+1:indexP-1]# get the rfc_number
+#                 print(rfc_num)
+#                 print('Got connection from', addr)
+#                 c.send(p2p_response_message(rfc_num))
+#                 if not data:
+#                     break
+#             else:
+#                 print("jj")
+#                 get_user_input()
+#     c.close()
 
 # peers_information()
 

@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="91d7d6f1-2ca3-48c3-907e-d46135d83e64" name="Default" comment="adding p2s list response">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client.py" afterPath="$PROJECT_DIR$/client.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="p2p.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -59,7 +58,7 @@
           <file leaf-file-name="client.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/client.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="220" column="6" selection-start="7251" selection-end="7251" vertical-scroll-proportion="0.2647059" vertical-offset="3183" max-vertical-offset="4080">
+                <state line="211" column="0" selection-start="7033" selection-end="8307" vertical-scroll-proportion="0.6447964" vertical-offset="2880" max-vertical-offset="4080">
                   <folding>
                     <element signature="e#54#104#0" expanded="true" />
                   </folding>
@@ -700,7 +699,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="220" column="6" selection-start="7251" selection-end="7251" vertical-scroll-proportion="0.2647059" vertical-offset="3183" max-vertical-offset="4080">
+        <state line="211" column="0" selection-start="7033" selection-end="8307" vertical-scroll-proportion="0.6447964" vertical-offset="2880" max-vertical-offset="4080">
           <folding>
             <element signature="e#54#104#0" expanded="true" />
           </folding>
