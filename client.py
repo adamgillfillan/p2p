@@ -151,7 +151,6 @@ def print_combined_list(dictionary_list, keys):
 
 def get_user_input():
     #if key press, then close:
-
     user_input = input("> Enter ADD, LIST, LOOKUP, GET, or EXIT:  ")
     if user_input == "EXIT":
         data = pickle.dumps("EXIT")
@@ -174,22 +173,15 @@ def get_user_input():
         print(server_data.decode('utf-8'), end="")
 
         new_data = pickle.loads(s.recv(1024))
-        #print(new_data)
         print_combined_list(new_data[0], new_data[1])
-        #server_data = s.recv(1024)
-        #print(server_data.decode('utf-8'), end="")
 
         get_user_input()
     elif user_input == "GET":
         user_input_rfc_number = input("> Enter the RFC Number: ")
         user_input_rfc_title = input("> Enter the RFC Title: ")
         data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title, "0"))
-        #print(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
-        #print(data)
         s.send(data)
         server_data = pickle.loads(s.recv(1024))
-        #print(server_data[0][3])
-        #print(server_data[0][1])
         if not server_data[0]:
             print(server_data[1])
         else:
