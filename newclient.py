@@ -6,7 +6,7 @@ import platform				# Import platform module to get our OS
 import os
 from _thread import *
 import pickle
-def p2p_downlaod_request(rfc_num):
+def p2p_get_request(rfc_num):
     s = socket.socket() # Create a socket object
 #s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEDADDR, 1)
     host = socket.gethostname()  # Get local machine name
@@ -28,4 +28,4 @@ def p2p_downlaod_request(rfc_num):
     f.write(data_rec.decode('utf-8'))
     f.close()
     s.close()
-p2p_downlaod_request(str(1))
+p2p_get_request(str(1))
