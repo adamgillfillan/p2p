@@ -126,7 +126,7 @@ def p2s_lookup_message(rfc_num, host, port, title):  # LOOKUP method
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
     #print message
-    return message, rfc_num
+    return [message, rfc_num]
 
 
 #display p2s request message for LIST methods
@@ -216,9 +216,12 @@ def get_user_input():
         user_input_rfc_number = input("> Enter the RFC Number: ")
         user_input_rfc_title = input("> Enter the RFC Title: ")
         data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        #print(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        #print(data)
         s.send(data)
         server_data = pickle.loads(s.recv(1024))
-        p2p_get_request(str(user_input_rfc_number), server_data[0][3], server_data[0][1], user_input_rfc_title)
+        p2p_get_request(str(user_input_rfc_number), server_data[0][3], server_data[0][1])
+        get_user_input()
     else:
         get_user_input()
 
