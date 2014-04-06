@@ -6,37 +6,16 @@ import platform				# Import platform module to get our OS
 import os
 import pickle
 import random
-import select
-import sys
 from _thread import *
-# def response_message(status):
-# 	if(status == "200"):
-# 		phrase = "OK"
-# 	elif(status == "404"):
-# 		phrase = "Not Found"
-# 	elif(status == "400"):
-# 		phrase = "Bad Request"
-# 	elif(status == "502"):
-# 		phrase = "P2P-CI Version Not Supported"	
-# 	last_modified = time.ctime(os.path.getmtime(file))
-# 	current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
-# 	message="P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
-# 			"Date: "+ current_time + "\n"\
-# 			"OS: "+str(OS)+"\n"
 
 
 def p2p_get_request(rfc_num, peer_host, peer_upload_port):
     s = socket.socket() # Create a socket object
-    #s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEDADDR, 1)
-    #host = socket.gethostname()  # Get local machine name
-    #port = 65055             # You need to modify this port number according to the client
     s.connect((peer_host, int(peer_upload_port)))
-    #rfc_num = "1"
-    #data = "GET RFC "+rfc_num+" P2P-CI/1.0"
     data = p2p_request_message(rfc_num, host)
     s.send(bytes(data, 'utf-8'))
     data_rec = s.recv(1024)
-    print (data_rec.decode('utf-8'))
+    print(data_rec.decode('utf-8'))
     current_path = os.getcwd()
     filename = "rfc"+rfc_num+".txt"
     OS = platform.system()
@@ -48,7 +27,6 @@ def p2p_get_request(rfc_num, peer_host, peer_upload_port):
     f.write(data_rec.decode('utf-8'))
     f.close()
     s.close()
-#p2p_get_request(str(1))
 
 
 # display p2p response message
@@ -85,7 +63,6 @@ def p2p_response_message(rfc_num): # the parameter "rfc_num" should be str
                   "Content-Length: " + str(content_length) + "\n"\
                   "Content-Type: text/text \n"\
                   + str(data)
-    #print message
     return message
 
 
@@ -105,7 +82,6 @@ def p2p_request_message(rfc_num, host):
     message = "GET RFC "+str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: "+str(host)+"\n"\
               "OS: "+str(OS)+"\n"
-    #print message
     return message
 
 
@@ -115,7 +91,6 @@ def p2s_add_message(rfc_num, host, port, title):  # for ADD
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
-    #print message
     return [message, rfc_num, host, port, title]
 
 
@@ -125,7 +100,6 @@ def p2s_lookup_message(rfc_num, host, port, title, get_or_lookup):  # LOOKUP met
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
-    #print message
     return [message, rfc_num, get_or_lookup]
 
 
@@ -134,7 +108,6 @@ def p2s_list_request(host, port):
     message = "LIST ALL P2P-CI/1.0 \n"\
               "Host: "+str(host)+"\n"\
               "Port: "+str(port)+"\n"
-    #print message
     return message
 
 
@@ -165,16 +138,11 @@ host = socket.gethostname()  # Get local machine name
 port = 7734                  # Reserve a port for your service.
 s.connect((host, port))
 data = pickle.dumps(peer_information())  # send all the peer information to server
-#print(data)
 s.send(data)
 data = s.recv(1024)
 print(data.decode('utf-8'))
 s.close
 
-
-# def print_combined_list(data):
-#     for item in data:
-#         print(' '.join(item))
 
 def print_combined_list(dictionary_list, keys):
     for item in dictionary_list:
@@ -222,7 +190,7 @@ def get_user_input():
         server_data = pickle.loads(s.recv(1024))
         #print(server_data[0][3])
         #print(server_data[0][1])
-        if server_data[0] == False:
+        if not server_data[0]:
             print(server_data[1])
         else:
             p2p_get_request(str(user_input_rfc_number), server_data[0]["Hostname"], server_data[0]["Port Number"])
