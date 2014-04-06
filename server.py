@@ -226,29 +226,38 @@ def client_thread(conn, addr):
     while True:
         data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
         #print(data)
+        #print(data[0][0])
+        #print(data[0][1])
+        #print(data[0][2])
+        #string_bool = data == str
+        #print(data == str)
+        #print(type(data))
         if data == "EXIT":
             break
         #if data == "2":
-        elif data[0][0] == "A":
-            print(data)
-            #print("Hello")
-            p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
-            RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
-            combined_list = append_to_combined_list(combined_list, data[1], data[4], addr[0], my_port)
-            print_dictionary(RFC_list, rfc_keys)
-        elif data[0][0] == "L":
+        if type(data) == str:
             print(data)
             p2s_list_response(conn)
             #new_data = pickle.dumps(print_dictionary(combined_list, combined_keys))
             new_data = pickle.dumps(return_dict())
             conn.send(new_data)
-        elif data[0][1] == "O":
-            #data = pickle.loads(conn.recv(1024))
-            #print("HELLO")
-            print(data)
-            new_data = pickle.dumps(p2s_lookup_response(data[1]))
-            print(new_data)
-            conn.send(new_data)
+        else:
+            if data[0][0] == "A":
+                print(data)
+                #print("Hello")
+                p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
+                RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
+                combined_list = append_to_combined_list(combined_list, data[1], data[4], addr[0], my_port)
+                print_dictionary(RFC_list, rfc_keys)
+            elif data[0][1] == "O":
+                #data = pickle.loads(conn.recv(1024))
+                print("HELLO")
+                #print(data)
+                #print(data[1])
+                new_data = pickle.dumps(p2s_lookup_response(data[1]))
+                #print(new_data)
+                conn.send(new_data)
+
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])
     RFC_list = delete_rfcs_dictionary(RFC_list, addr[0])

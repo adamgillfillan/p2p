@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="91d7d6f1-2ca3-48c3-907e-d46135d83e64" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client.py" afterPath="$PROJECT_DIR$/client.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.py" afterPath="$PROJECT_DIR$/server.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -30,13 +29,13 @@
     <favorites_list name="p2p" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
+    <splitter split-orientation="horizontal" split-proportion="0.47909698">
       <split-first>
         <leaf>
           <file leaf-file-name="server.py" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/server.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="75" column="22" selection-start="2601" selection-end="2601" vertical-scroll-proportion="0.2550091" vertical-offset="1135" max-vertical-offset="4641">
+                <state line="250" column="36" selection-start="8434" selection-end="8434" vertical-scroll-proportion="0.3478261" vertical-offset="4050" max-vertical-offset="4913">
                   <folding>
                     <element signature="e#54#104#0" expanded="true" />
                   </folding>
@@ -60,7 +59,7 @@
           <file leaf-file-name="client.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/client.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="220" column="106" selection-start="7718" selection-end="7718" vertical-scroll-proportion="0.16757742" vertical-offset="3648" max-vertical-offset="5304">
+                <state line="222" column="8" selection-start="7735" selection-end="7735" vertical-scroll-proportion="0.38433516" vertical-offset="3563" max-vertical-offset="5355">
                   <folding>
                     <element signature="e#54#104#0" expanded="true" />
                   </folding>
@@ -583,7 +582,15 @@
       <created>1396807826286</created>
       <updated>1396807826286</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="updated features">
+      <created>1396811131982</created>
+      <updated>1396811131982</updated>
+    </task>
+    <task id="LOCAL-00022" summary="added everything">
+      <created>1396812643257</created>
+      <updated>1396812643257</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -600,7 +607,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32736155" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32736155" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -659,7 +666,9 @@
     <MESSAGE value="updated PEP 8" />
     <MESSAGE value="adding p2s list response" />
     <MESSAGE value="add and list working" />
-    <option name="LAST_COMMIT_MESSAGE" value="add and list working" />
+    <MESSAGE value="updated features" />
+    <MESSAGE value="added everything" />
+    <option name="LAST_COMMIT_MESSAGE" value="added everything" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -852,7 +861,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="22" selection-start="2601" selection-end="2601" vertical-scroll-proportion="0.2550091" vertical-offset="1135" max-vertical-offset="4641">
+        <state line="250" column="36" selection-start="8434" selection-end="8434" vertical-scroll-proportion="0.3478261" vertical-offset="4050" max-vertical-offset="4913">
           <folding>
             <element signature="e#54#104#0" expanded="true" />
           </folding>
@@ -861,7 +870,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="220" column="106" selection-start="7718" selection-end="7718" vertical-scroll-proportion="0.16757742" vertical-offset="3648" max-vertical-offset="5304">
+        <state line="222" column="8" selection-start="7735" selection-end="7735" vertical-scroll-proportion="0.38433516" vertical-offset="3563" max-vertical-offset="5355">
           <folding>
             <element signature="e#54#104#0" expanded="true" />
           </folding>
