@@ -48,34 +48,55 @@ def response_message(status):
 
 # P2S response message from the server
 def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
-    filename = "rfc"+str(rfc_num)+".txt"
+    #filename = "rfc"+str(rfc_num)+".txt"
     current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
     OS = platform.platform()
-    if os.path.exists(filename) == 0:
+    #if os.path.exists(filename) == 0:
+    response = search_combined_dict(rfc_num)
+    if response == False:
         status = "404"
         phrase = "Not Found"
         message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
                  "Date: "+ current_time + "\n"\
                  "OS: "+str(OS)+"\n"
+        return message
     else:
+
         status = "200"
         phrase = "OK"
-        txt = open(filename)
-        data = txt.read()
-        last_modified = time.ctime(os.path.getmtime(filename))
-        content_length = os.path.getsize(filename)
-        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
-                               + str(data)
+        # txt = open(filename)
+        # data = txt.read()
+        # last_modified = time.ctime(os.path.getmtime(filename))
+        # content_length = os.path.getsize(filename)
+        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"
         ##################
         #######need to discuss with adam about interface
         ###################
         #print message
-    return message
+        return response, message
 
 
 def p2s_add_response(conn, rfc_num, rfc_title, hostname, port):
     response = "P2P-CI/1.0 200 OK \nRFC "+ rfc_num +" "+rfc_title+" "+str(hostname)+" "+str(port)
     conn.send(bytes(response, 'utf-8'))
+
+
+# def get_with_default(colour, L, default=''):
+#     temp = None
+#     for d in L:
+#         if d['color'] == colour:
+#             return d
+#         elif d['color'] == default:
+#             temp = d
+#     return temp
+
+
+def search_combined_dict(rfc_number):
+    for d in combined_list:
+        if d['RFC Number'] == rfc_number:
+            return d
+
+    return False
 
 
 # def create_parsed_list_for_list_request(my_peer_list, my_rfc_list):
@@ -197,9 +218,10 @@ def client_thread(conn, addr):
     peer_list, peer_keys = create_peer_list(peer_list, addr[0], data[0])  # change addr[1] to data[0]
     RFC_list, rfc_keys = create_rfc_list(RFC_list, data[1], addr[0])
     combined_list, combined_keys = create_combined_list(combined_list, data[1], addr[0], data[0])
+    print(combined_list)
     #print_dictionary(peer_list, peer_keys)
     #print_dictionary(RFC_list, rfc_keys)
-    #print_dictionary(combined_list, combined_keys)
+    print_dictionary(combined_list, combined_keys)
 
     while True:
         data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
@@ -216,7 +238,10 @@ def client_thread(conn, addr):
             #new_data = pickle.dumps(print_dictionary(combined_list, combined_keys))
             new_data = pickle.dumps(return_dict())
             conn.send(new_data)
-
+        elif data[0][0] == "G":
+            data = pickle.loads(conn.recv(1024))
+            new_data = pickle.dumps(p2s_lookup_response(data[1]))
+            conn.send(new_data)
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])
     RFC_list = delete_rfcs_dictionary(RFC_list, addr[0])
