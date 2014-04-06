@@ -48,10 +48,8 @@ def response_message(status):
 
 # P2S response message from the server
 def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
-    #filename = "rfc"+str(rfc_num)+".txt"
     current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
     OS = platform.platform()
-    #if os.path.exists(filename) == 0:
     response = search_combined_dict(rfc_num)
     if response == False:
         status = "404"
@@ -59,20 +57,30 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
         message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
                  "Date: "+ current_time + "\n"\
                  "OS: "+str(OS)+"\n"
-        return message
+        return response, message
     else:
-
         status = "200"
         phrase = "OK"
-        # txt = open(filename)
-        # data = txt.read()
-        # last_modified = time.ctime(os.path.getmtime(filename))
-        # content_length = os.path.getsize(filename)
         message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"
-        ##################
-        #######need to discuss with adam about interface
-        ###################
-        #print message
+        return response, message
+
+
+def p2s_lookup_response2(rfc_num): # the parameter "rfc_num" should be str
+    current_time = time.strftime("%a, %d %b %Y %X %Z", time.localtime())
+    OS = platform.platform()
+
+    response = search_combined_dict2(rfc_num)
+    if len(response) == 0:
+        status = "404"
+        phrase = "Not Found"
+        message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+                 "Date: "+ current_time + "\n"\
+                 "OS: "+str(OS)+"\n"
+        return response, message
+    else:
+        status = "200"
+        phrase = "OK"
+        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"
         return response, message
 
 
@@ -98,6 +106,14 @@ def search_combined_dict(rfc_number):
 
     return False
 
+
+def search_combined_dict2(rfc_number):
+    my_list = []
+    for d in combined_list:
+        if d['RFC Number'] == rfc_number:
+            my_list.append(d)
+
+    return my_list
 
 # def create_parsed_list_for_list_request(my_peer_list, my_rfc_list):
 #     my_peer_list = list(peer_list)
@@ -225,13 +241,6 @@ def client_thread(conn, addr):
 
     while True:
         data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
-        #print(data)
-        #print(data[0][0])
-        #print(data[0][1])
-        #print(data[0][2])
-        #string_bool = data == str
-        #print(data == str)
-        #print(type(data))
         if data == "EXIT":
             break
         #if data == "2":
@@ -242,6 +251,10 @@ def client_thread(conn, addr):
             new_data = pickle.dumps(return_dict())
             conn.send(new_data)
         else:
+            #print(data[0])
+            #print(data[1])
+            #print(data)
+            print("DATA2", data[2])
             if data[0][0] == "A":
                 print(data)
                 #print("Hello")
@@ -249,13 +262,15 @@ def client_thread(conn, addr):
                 RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
                 combined_list = append_to_combined_list(combined_list, data[1], data[4], addr[0], my_port)
                 print_dictionary(RFC_list, rfc_keys)
-            elif data[0][1] == "O":
-                #data = pickle.loads(conn.recv(1024))
-                print("HELLO")
-                #print(data)
-                #print(data[1])
+            if data[2] == "0":
+            #elif data[0][1] == "O":
+                print("HELLO1")
                 new_data = pickle.dumps(p2s_lookup_response(data[1]))
-                #print(new_data)
+                conn.send(new_data)
+            elif data[2] == "1":
+                print("HELLO")
+                print(p2s_lookup_response2(data[1]))
+                new_data = pickle.dumps(p2s_lookup_response2(data[1]))
                 conn.send(new_data)
 
     # Remove the client's info from the dictionaries

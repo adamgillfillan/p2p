@@ -1,4 +1,22 @@
 P2P-CI/1.0 200 OK
+Date: Sun, 06 Apr 2014 16:38:44 Eastern Daylight Time
+OS: Windows
+Last-Modified: Sun Apr  6 16:05:08 2014
+Content-Length: 1066
+Content-Type: text/text 
+P2P-CI/1.0 200 OK
+Date: Sun, 06 Apr 2014 16:05:08 Eastern Daylight Time
+OS: Windows
+Last-Modified: Sun Apr  6 16:04:52 2014
+Content-Length: 1070
+Content-Type: text/text 
+P2P-CI/1.0 200 OK
+Date: Sun, 06 Apr 2014 16:04:52 Eastern Daylight Time
+OS: Windows
+Last-Modified: Sun Apr  6 14:20:17 2014
+Content-Length: 1078
+Content-Type: text/text 
+P2P-CI/1.0 200 OK
 Date: Sun, 06 Apr 2014 14:09:52 EDT
 OS: Darwin
 Last-Modified: Fri Apr  4 11:34:17 2014
@@ -18,38 +36,4 @@ Request for Comments: 1                                          UCLA
                          Title:   Host Software
                         Author:   Steve Crocker
                           Installation:   UCLA
-                          Date:   7 April 1969
-             Network Working Group Request for Comment:   1
-
-
-CONTENTS
-
-INTRODUCTION
-
-  I. A Summary of the IMP Software
-
-     Messages
-
-     Links
-
-     IMP Transmission and Error Checking
-
-     Open Questions on the IMP Software
-
- II. Some Requirements Upon the Host-to-Host Software
-
-     Simple Use
-
-     Deep Use
-
-     Error Checking
-
-III. The Host Software
-
-     Establishment of a Connection
-
-     High Volume Transmission
-
-     A Summary of Primitives
-
-   
+ 

@@ -30,7 +30,7 @@ def p2p_get_request(rfc_num, peer_host, peer_upload_port):
     #s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEDADDR, 1)
     #host = socket.gethostname()  # Get local machine name
     #port = 65055             # You need to modify this port number according to the client
-    s.connect((peer_host, peer_upload_port))
+    s.connect((peer_host, int(peer_upload_port)))
     #rfc_num = "1"
     #data = "GET RFC "+rfc_num+" P2P-CI/1.0"
     data = p2p_request_message(rfc_num, host)
@@ -120,13 +120,13 @@ def p2s_add_message(rfc_num, host, port, title):  # for ADD
 
 
 # display p2s request message for LOOKUP method
-def p2s_lookup_message(rfc_num, host, port, title):  # LOOKUP method
+def p2s_lookup_message(rfc_num, host, port, title, get_or_lookup):  # LOOKUP method
     message = "LOOKUP" + " RFC " + str(rfc_num)+" P2P-CI/1.0 \n"\
               "Host: " + str(host)+"\n"\
               "Port: " + str(port)+"\n"\
               "Title: " + str(title)+"\n"
     #print message
-    return [message, rfc_num]
+    return [message, rfc_num, get_or_lookup]
 
 
 #display p2s request message for LIST methods
@@ -215,12 +215,31 @@ def get_user_input():
     elif user_input == "GET":
         user_input_rfc_number = input("> Enter the RFC Number: ")
         user_input_rfc_title = input("> Enter the RFC Title: ")
-        data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title, "0"))
         #print(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
         #print(data)
         s.send(data)
         server_data = pickle.loads(s.recv(1024))
-        p2p_get_request(str(user_input_rfc_number), server_data[0][3], server_data[0][1])
+        #print(server_data[0][3])
+        #print(server_data[0][1])
+        if server_data[0] == False:
+            print(server_data[1])
+        else:
+            p2p_get_request(str(user_input_rfc_number), server_data[0]["Hostname"], server_data[0]["Port Number"])
+        get_user_input()
+    elif user_input == "LOOKUP":
+        user_input_rfc_number = input("> Enter the RFC Number: ")
+        user_input_rfc_title = input("> Enter the RFC Title: ")
+        data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title, "1"))
+        #print(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title))
+        #print(data)
+        s.send(data)
+        server_data = pickle.loads(s.recv(1024))
+        #print(server_data[0][3])
+        #print(server_data[0][1])
+        print(server_data[1], end="")
+        keys = ['RFC Number', 'RFC Title', 'Hostname', 'Port Number']
+        print_combined_list(server_data[0], keys)
         get_user_input()
     else:
         get_user_input()
