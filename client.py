@@ -146,21 +146,25 @@ print(data.decode('utf-8'))
 s.close
 
 
-def print_combined_list(data):
-    for item in data:
-        print(' '.join(item))
+# def print_combined_list(data):
+#     for item in data:
+#         print(' '.join(item))
+
+def print_combined_list(dictionary_list, keys):
+    for item in dictionary_list:
+        print(' '.join([item[key] for key in keys]))
 
 
 def get_user_input():
     #if key press, then close:
 
-    user_input = input("> Enter 1 for exit: ")
-    if user_input == "1":
-        data = pickle.dumps("1")
+    user_input = input("> Enter ADD, LIST, LOOKUP, GET, or EXIT:  ")
+    if user_input == "EXIT":
+        data = pickle.dumps("EXIT")
         #s.send(bytes('1', "utf-8"))
         s.send(data)
         s.close                     # Close the socket when done
-    elif user_input == "2":
+    elif user_input == "ADD":
         user_input_rfc_number = input("> Enter the RFC Number: ")
         user_input_rfc_title = input("> Enter the RFC Title: ")
 
@@ -169,19 +173,22 @@ def get_user_input():
         server_data = s.recv(1024)
         print(server_data.decode('utf-8'))
         get_user_input()
-    elif user_input == "3":
+    elif user_input == "LIST":
         data = pickle.dumps(p2s_list_request(host, port))
         s.send(data)
         server_data = s.recv(1024)
         print(server_data.decode('utf-8'), end="")
-        #my_data = server_data.decode('utf-8')
+
         new_data = pickle.loads(s.recv(1024))
-        #print(my_data, print_combined_list(new_data))
         #print(new_data)
-        print_combined_list(new_data)
+        print_combined_list(new_data[0], new_data[1])
+        #server_data = s.recv(1024)
+        #print(server_data.decode('utf-8'), end="")
+
         get_user_input()
     else:
         get_user_input()
+
 
 def p2p_listen_thread(str, i):
     upload_socket = socket.socket()
