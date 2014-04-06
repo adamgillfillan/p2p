@@ -149,6 +149,14 @@ def append_to_rfc_list(dictionary_list, rfc_num, rfc_title, hostname):
     return dictionary_list
 
 
+def append_to_combined_list(dictionary_list, rfc_num, rfc_title, hostname, port):
+    keys = ['RFC Number', 'RFC Title', 'Hostname', 'Port Number']
+    entry = [str(rfc_num), rfc_title, hostname, str(port)]
+
+    dictionary_list.insert(0, dict(zip(keys, entry)))
+    return dictionary_list
+
+
 # Prints the list of dictionary items
 def print_dictionary(dictionary_list, keys):
     for item in dictionary_list:
@@ -172,6 +180,11 @@ def delete_combined_dictionary(combined_dict, hostname):
     return combined_dict
 
 
+def return_dict():
+    keys = ['RFC Number', 'RFC Title', 'Hostname', 'Port Number']
+    return combined_list, keys
+
+
 # Create a thread for each client. This prevents the server from blocking communication with multiple clients
 def client_thread(conn, addr):
     global peer_list, RFC_list, combined_list
@@ -179,6 +192,7 @@ def client_thread(conn, addr):
     print('Got connection from', addr)
     data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
     print(data)
+    my_port = data[0]
     # Generate the peer list and RFC list
     peer_list, peer_keys = create_peer_list(peer_list, addr[0], data[0])  # change addr[1] to data[0]
     RFC_list, rfc_keys = create_rfc_list(RFC_list, data[1], addr[0])
@@ -189,18 +203,19 @@ def client_thread(conn, addr):
 
     while True:
         data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
-        if data == "1":
+        if data == "EXIT":
             break
         #if data == "2":
         elif data[0][0] == "A":
             p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
             RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
+            combined_list = append_to_combined_list(combined_list, data[1], data[4], addr[0], my_port)
             print_dictionary(RFC_list, rfc_keys)
         elif data[0][0] == "L":
             p2s_list_response(conn)
-            new_data = pickle.dumps(print_dictionary(combined_list, combined_keys))
+            #new_data = pickle.dumps(print_dictionary(combined_list, combined_keys))
+            new_data = pickle.dumps(return_dict())
             conn.send(new_data)
-            #pass
 
     # Remove the client's info from the dictionaries
     peer_list = delete_peers_dictionary(peer_list, addr[0])
