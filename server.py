@@ -37,14 +37,14 @@ def p2s_lookup_response(rfc_num): # the parameter "rfc_num" should be str
     if not response:
         status = "404"
         phrase = "Not Found"
-        message= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+        message= "P2P-CI1111/1.0 "+ status + " "+ phrase + "\n"\
                  "Date: " + current_time + "\n"\
                  "OS: "+str(OS)+"\n"
         return response, message
     else:
         status = "200"
         phrase = "OK"
-        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"
+        message	= "P2P-CI11111/1.0 "+ status + " "+ phrase + "\n"
         return response, message
 
 
@@ -63,7 +63,7 @@ def p2s_lookup_response2(rfc_num): # the parameter "rfc_num" should be str
     else:
         status = "200"
         phrase = "OK"
-        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"
+        message	= "P2P-CI11111/1.0 "+ status + " "+ phrase + "\n"
         return response, message
 
 
@@ -198,6 +198,9 @@ def client_thread(conn, addr):
 
     while True:
         data = pickle.loads(conn.recv(1024))  # receive the[upload_port_num, rfcs_num, rfcs_title]
+        print("Data 0:", data[0])
+        print("Data 1:", data[1])
+        print("Data 2:", data[2])
         if data == "EXIT":
             break
         if type(data) == str:
@@ -206,14 +209,17 @@ def client_thread(conn, addr):
             conn.send(new_data)
         else:
             if data[0][0] == "A":
+                print("goodbye")
                 p2s_add_response(conn, data[1], data[4], addr[0], data[3])  # Put server response message here
                 RFC_list = append_to_rfc_list(RFC_list, data[1], data[4], addr[0])
                 combined_list = append_to_combined_list(combined_list, data[1], data[4], addr[0], my_port)
                 print_dictionary(RFC_list, rfc_keys)
             if data[2] == "0":
+                print("hello")
                 new_data = pickle.dumps(p2s_lookup_response(data[1]))
                 conn.send(new_data)
             elif data[2] == "1":
+                print("herep")
                 print(p2s_lookup_response2(data[1]))
                 new_data = pickle.dumps(p2s_lookup_response2(data[1]))
                 conn.send(new_data)
