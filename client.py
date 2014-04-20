@@ -14,8 +14,11 @@ def p2p_get_request(rfc_num, peer_host, peer_upload_port):
     s.connect((peer_host, int(peer_upload_port)))
     data = p2p_request_message(rfc_num, host)
     s.send(bytes(data, 'utf-8'))
-    data_rec = s.recv(1024)
-    print(data_rec.decode('utf-8'))
+    data_rec= pickle.loads(s.recv(1024))
+    print("Data_rec", str(data_rec))
+    #my_data = data_rec.decode('utf-8')
+    my_data = data_rec[1]
+    print(my_data)
     current_path = os.getcwd()
     filename = "rfc"+rfc_num+".txt"
     OS = platform.system()
@@ -23,9 +26,11 @@ def p2p_get_request(rfc_num, peer_host, peer_upload_port):
         filename = current_path + "\\rfc\\" + filename
     else:
         filename = current_path + "/rfc/" + filename
-    f = open(filename,'w')
-    f.write(data_rec.decode('utf-8'))
-    f.close()
+    #f = open(filename,'w')
+    with open(filename, 'w') as file:
+        file.write(my_data)
+    #f.write(data_rec.decode('utf-8'))
+    #f.close()
     s.close()
 
 
@@ -56,13 +61,14 @@ def p2p_response_message(rfc_num): # the parameter "rfc_num" should be str
         data = txt.read()
         last_modified = time.ctime(os.path.getmtime(filename))
         content_length = os.path.getsize(filename)
-        message	= "P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
+        message	= ["P2P-CI/1.0 "+ status + " "+ phrase + "\n"\
                   "Date: " + current_time + "\n"\
                   "OS: " + str(OS)+"\n"\
                   "Last-Modified: " + last_modified + "\n"\
                   "Content-Length: " + str(content_length) + "\n"\
-                  "Content-Type: text/text \n"\
-                  + str(data)
+                  "Content-Type: text/text \n", str(data)]
+                  #+ str(data)
+
     return message
 
 
@@ -134,7 +140,8 @@ upload_port_num = 65000+random.randint(1, 500)  # generate a upload port randoml
 dict_list_of_rfcs = []  # list of dictionaries of RFC numbers and Titles.
 s=socket.socket()          # Create a socket object
 #s.setsockopt(socket.SOL_SOCKET, socket.SO_RESUEDADDR, 1)
-host = socket.gethostname()  # Get local machine name
+#host = socket.gethostname()  # Get local machine name
+host = "10.139.56.116"
 port = 7734                  # Reserve a port for your service.
 s.connect((host, port))
 data = pickle.dumps(peer_information())  # send all the peer information to server
@@ -182,6 +189,7 @@ def get_user_input():
         data = pickle.dumps(p2s_lookup_message(user_input_rfc_number, host, port, user_input_rfc_title, "0"))
         s.send(data)
         server_data = pickle.loads(s.recv(1024))
+        print("SERVER DATA:", server_data)
         if not server_data[0]:
             print(server_data[1])
         else:
@@ -219,7 +227,7 @@ def p2p_listen_thread(str, i):
         rfc_num = data_p2p[indexC+1:indexP-1]# get the rfc_number
         print (rfc_num)
         print ('Got connection from', addr)
-        c.send(bytes(p2p_response_message(rfc_num),'utf-8'))
+        c.send(pickle.dumps(p2p_response_message(rfc_num)))
         c.close()
 
 # First we create new thread to handle upload listening event
