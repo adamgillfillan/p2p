@@ -142,7 +142,7 @@ dict_list_of_rfcs = []  # list of dictionaries of RFC numbers and Titles.
 s=socket.socket()          # Create a socket object
 #s.setsockopt(socket.SOL_SOCKET, socket.SO_RESUEDADDR, 1)
 #host = socket.gethostname()  # Get local machine name
-host = "10.139.56.116"
+host = "10.139.68.102"
 port = 7734                  # Reserve a port for your service.
 s.connect((host, port))
 data = pickle.dumps(peer_information())  # send all the peer information to server
