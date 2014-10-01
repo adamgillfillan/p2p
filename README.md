@@ -3,7 +3,7 @@ p2p
 A peer to peer sharing application my partner and I developed for our graduate networking course, Internet Protocols.
 This application is a P2P file sharing system with a centralized index (CI).
 
-The project goals of this project:
+The project goals of this project:  
 • Becoming familiar with network programming and the socket interface  
 • Creating server processes that wait for connections  
 • Creating client processes that contact a well-known server and exchange data over the Internet  
